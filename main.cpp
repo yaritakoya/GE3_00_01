@@ -15,11 +15,18 @@
 // Debug用のあれやこれを使えるようにする
 #include <dbghelp.h>
 #include <strsafe.h>
+#include "Input.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+
+#pragma comment(lib,"dinput8.lib")
+
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"Dbghelp.lib")
@@ -481,7 +488,7 @@ ModelData LoadObjectFile(const std::string& directoryPath, const std::string& fi
 		std::string identifier; // 行の先頭の識別子を格納する
 		std::istringstream s(line); // 行をストリームに変換
 		s >> identifier; // 先頭の識別子を取得
-		
+
 		if (identifier == "v") {
 			Vector4 position;
 			s >> position.x >> position.y >> position.z;
@@ -522,7 +529,7 @@ ModelData LoadObjectFile(const std::string& directoryPath, const std::string& fi
 				modelData.vertices.push_back(vertex);
 
 				// 三角形の頂点データに追加
-				triangle[faceVertex] = {position,texcoord};
+				triangle[faceVertex] = { position,texcoord };
 			}
 			//頂点を逆順で登録することで、周り順を逆にする
 			modelData.vertices.push_back(triangle[2]);
@@ -1149,6 +1156,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma endregion
 
+	//ポインタ
+	Input* input = nullptr;
+	//入力の初期化
+	input = new Input();
+	input->Initialize(wc.hInstance, hwnd);
+
 	MSG msg{};
 
 	while (msg.message != WM_QUIT) {
@@ -1158,6 +1171,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			DispatchMessage(&msg);
 
 		} else {
+			//入力の更新
+			input->Update();
+
 			// ImGuiの開始処理
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplWin32_NewFrame();
@@ -1170,6 +1186,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::DragFloat2("Sprite transform", &transformSprite.translate.x, 0.1f);
 
 			// ゲームの処理
+			if (input->PushKey(DIK_SPACE) && input->Triggerkey(DIK_SPACE)) {
+				OutputDebugStringA("Press Space\n");
+			}
 
 			// これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
@@ -1262,7 +1281,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion
 
 			// IBVを設定
-			commandList->IASetIndexBuffer(&indexBufferViewSprite); 
+			commandList->IASetIndexBuffer(&indexBufferViewSprite);
 			//描画！(DraoCall/ドローコール)。6個のインデックスを使用し1つのインスタンスを描画。その他は当面0でいい
 			commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
@@ -1308,6 +1327,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			assert(SUCCEEDED(hr));
 			hr = commandList->Reset(commandAllocator, nullptr);
 			assert(SUCCEEDED(hr));
+
+			if (input->PushKey(DIK_ESCAPE)) {
+				//OutputDebugStringA("Hit 0\n");
+				break;
+			}
 		}
 	}
 
@@ -1348,6 +1372,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textrueResource->Release();
 	depthStencilResource->Release();
 	dsvDescriptorHeap->Release();
+
+	//入力解放
+	delete input;
 
 #ifdef _DEBUG
 
