@@ -4,9 +4,6 @@
 #include <cassert>
 #include <windows.h>
 
-#pragma comment(lib,"dinput8.lib")// DirectInputのライブラリをリンクする
-#pragma comment(lib,"dxguid.lib")// DirectInputで必要になるライブラリをリンクする
-
 class Input
 {
 public://メンバ関数
@@ -24,7 +21,7 @@ public://メンバ関数
 
 private://メンバ変数
 	//DirectInput8のインターフェース
-	ComPtr<IDirectInput8>directInput = nullptr;
+	ComPtr<IDirectInput8>directInput/* = nullptr*/;
 	//キーボードのデバイス
 	ComPtr<IDirectInputDevice8> keyboard;
 	//キーボードの入力確認情報

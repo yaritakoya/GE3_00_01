@@ -1,5 +1,8 @@
 #include "Input.h"
 
+#pragma comment(lib,"dinput8.lib")// DirectInputのライブラリをリンクする
+#pragma comment(lib,"dxguid.lib")// DirectInputで必要になるライブラリをリンクする
+
 void Input::Initialize(HINSTANCE hInstance,HWND hwnd)
 {
 	HRESULT result;
