@@ -1,4 +1,5 @@
 #include "wrl.h"
+#include "WinApp.h"
 #define DIRECTINPUT_VERSION 0x0800// DirectInputのバージョン指定
 #include <dinput.h>
 #include <cassert>
@@ -8,7 +9,7 @@ class Input
 {
 public://メンバ関数
 	//初期化
-	void Initialize(HINSTANCE hInstance,HWND hwnd);
+	void Initialize(WinApp* winApp);
 	//更新
 	void Update();
 	//namespace省略
@@ -27,5 +28,7 @@ private://メンバ変数
 	//キーボードの入力確認情報
 	BYTE key[256] = {};
 	BYTE keypre[256] = {};
+	//WindowsAPI
+	WinApp* winApp = nullptr;
 };
 
