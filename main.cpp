@@ -1182,6 +1182,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma endregion
 
+		dxCommon->PreDraw();
+
 		//Sprite用のWorldViewProjectionMatrixを作る
 		//Matrix4x4 worldMatrixSprite = MakeAffine(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
 		Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
@@ -1294,7 +1296,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-	}
+		dxCommon->PostDraw();
+	
+}
 
 	// ImGuiの終了処理
 	ImGui_ImplDX12_Shutdown();

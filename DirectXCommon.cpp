@@ -37,10 +37,6 @@ void DirectXCommon::Initialize(WinApp* winApp) {
     InitializeFence();
 }
 
-// =====================================
-//  描画前処理 / 描画後処理
-// =====================================
-
 void DirectXCommon::PreDraw() {
 
     // バックバッファの番号
@@ -121,10 +117,6 @@ void DirectXCommon::PostDraw() {
     assert(SUCCEEDED(hr));
 }
 
-// =====================================
-//  SRV ハンドル
-// =====================================
-
 D3D12_CPU_DESCRIPTOR_HANDLE DirectXCommon::GetSRVCPUDescriptorHandle(uint32_t index) const {
     return GetCPUDescriptorHandle(srvDescriptorHeap_, srvDescriptorSize_, index);
 }
@@ -132,10 +124,6 @@ D3D12_CPU_DESCRIPTOR_HANDLE DirectXCommon::GetSRVCPUDescriptorHandle(uint32_t in
 D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetSRVGPUDescriptorHandle(uint32_t index) const {
     return GetGPUDescriptorHandle(srvDescriptorHeap_, srvDescriptorSize_, index);
 }
-
-// =====================================
-//  デバイス / コマンド / スワップチェーン
-// =====================================
 
 void DirectXCommon::InitializeDevice() {
 
@@ -214,10 +202,6 @@ void DirectXCommon::InitializeSwapChain(WinApp* winApp) {
     hr = swapChain1.As(&swapChain_);
     assert(SUCCEEDED(hr));
 }
-
-// =====================================
-//  デスクリプタヒープ / RTV / DSV
-// =====================================
 
 void DirectXCommon::InitializeDescriptorHeaps() {
     HRESULT hr;
@@ -301,12 +285,9 @@ void DirectXCommon::InitializeDepthBuffer() {
     clearValue.DepthStencil.Stencil = 0;
 
     HRESULT hr = device_->CreateCommittedResource(
-        &heapProps,
-        D3D12_HEAP_FLAG_NONE,
-        &desc,
-        D3D12_RESOURCE_STATE_DEPTH_WRITE,
-        &clearValue,
-        IID_PPV_ARGS(&depthBuffer_));
+        &heapProps,D3D12_HEAP_FLAG_NONE,
+        &desc,D3D12_RESOURCE_STATE_DEPTH_WRITE,
+        &clearValue,IID_PPV_ARGS(&depthBuffer_));
     assert(SUCCEEDED(hr));
 }
 
