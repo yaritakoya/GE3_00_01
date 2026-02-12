@@ -17,7 +17,7 @@ class DirectXCommon {
 public:
 	// 初期化
 	void Initialize(WinApp* winApp);
-
+	
 	// 描画前後
 	void PreDraw();
 	void PostDraw();
@@ -29,10 +29,8 @@ public:
 	// getter（資料のスライド）
 	ID3D12DescriptorHeap* GetSRVHeap()	const { return srvDescriptorHeap_.Get(); }
 
-	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
-	ID3D12Device* GetDevice() const { return device_.Get(); }
-
 private:
+
 	// D3D12デバイスを生成する
 	void InitializeDevice();
 
@@ -42,25 +40,25 @@ private:
 	// スワップチェーンを生成する（画面表示用バッファ）
 	void InitializeSwapChain(WinApp* winApp);
 
-	// 各種ディスクリプタヒープ
+	// 各種ディスクリプタヒープを生成する（RTV / DSV / SRV など）
 	void InitializeDescriptorHeaps();
 
-	// レンダーターゲットビュー
+	// レンダーターゲットビュー（RTV）を生成する
 	void InitializeRenderTargetView();
 
-	// 深度バッファ
+	// 深度バッファ用リソースを生成する
 	void InitializeDepthBuffer();
 
-	// 深度ステンシルビュー
+	// 深度ステンシルビュー（DSV）を生成する
 	void InitializeDepthStencilView();
 
-	// ビューポート
+	// ビューポートを設定する（描画範囲）
 	void InitializeViewport();
 
-	// シザー矩形
+	// シザー矩形を設定する（描画制限領域）
 	void InitializeScissorRect();
 
-	// DXCコンパイラ
+	// DXCコンパイラを初期化する（HLSLコンパイル用）
 	void InitializeDXCCompiler();
 
 	// ImGuiを初期化する
@@ -68,13 +66,6 @@ private:
 
 	// フェンスを生成する（GPU同期用）
 	void InitializeFence();
-
-	// -------------------------------------------------------------------------
-	// 画像資料に基づくヘルパー関数の追加
-	// -------------------------------------------------------------------------
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, uint32_t descriptorSize, uint32_t index) const;
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, uint32_t descriptorSize, uint32_t index) const;
-	ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) const;
 
 private:
 	// Windowsアプリケーション
@@ -108,6 +99,22 @@ private:
 	UINT64 fenceVal_ = 0;
 	HANDLE fenceEvent_ = nullptr;
 
-	ComPtr<IDXGISwapChain4> swapChain_;
-	ComPtr<ID3D12Resource> swapChainResources_[2];
+	ComPtr<IDXGISwapChain4> swapChain_; // スワップチェーン
+	std::array<ComPtr<ID3D12Resource>, 2> backBuffers_; // バックバッファ2枚
+	D3D12_VIEWPORT viewport_{}; // ビューポート
+	D3D12_RECT     scissorRect_{}; //シザー
+
+	// DXC
+	ComPtr<IDxcUtils>          dxcUtils_;
+	ComPtr<IDxcCompiler3>      dxcCompiler_;
+	ComPtr<IDxcIncludeHandler> includeHandler_;
+
+	// 任意のインデックスのハンドルを計算するヘルパ
+	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(
+		const ComPtr<ID3D12DescriptorHeap>& heap,
+		UINT size, uint32_t index);
+
+	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
+		const ComPtr<ID3D12DescriptorHeap>& heap,
+		UINT size, uint32_t index);
 };
