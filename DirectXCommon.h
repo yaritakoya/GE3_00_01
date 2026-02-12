@@ -8,13 +8,15 @@
 #include <dxcapi.h>
 #include <wrl.h>
 #include <string>
+#include <chrono>
 
 #include "externals/DirectXTex/DirectXTex.h"
 
 using Microsoft::WRL::ComPtr;
 
 class DirectXCommon {
-public:
+public: // ★ ここから下の関数はどこからでもアクセスできる (public) ★
+
 	// 初期化
 	void Initialize(WinApp* winApp);
 
@@ -26,13 +28,16 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUDescriptorHandle(uint32_t index) const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUDescriptorHandle(uint32_t index) const;
 
-	// getter（資料のスライド）
-	ID3D12DescriptorHeap* GetSRVHeap()	const { return srvDescriptorHeap_.Get(); }
-
-	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
+	// ====================================================
+	// ★ ここに Getter をまとめる（絶対に private の上に書く）
+	// ====================================================
 	ID3D12Device* GetDevice() const { return device_.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
+	ID3D12DescriptorHeap* GetSRVHeap() const { return srvDescriptorHeap_.Get(); }
 
-private:
+
+private: // ★ ここから下の変数は外部からアクセスできない (private) ★
+
 	// D3D12デバイスを生成する
 	void InitializeDevice();
 
@@ -42,26 +47,32 @@ private:
 	// スワップチェーンを生成する（画面表示用バッファ）
 	void InitializeSwapChain(WinApp* winApp);
 
-	// 各種ディスクリプタヒープ
+	// 各種ディスクリプタヒープを生成する
 	void InitializeDescriptorHeaps();
 
-	// レンダーターゲットビュー
+	// レンダーターゲットビューを生成する
 	void InitializeRenderTargetView();
 
-	// 深度バッファ
+	// 深度バッファを生成する
 	void InitializeDepthBuffer();
 
-	// 深度ステンシルビュー
+	// 深度ステンシルビューを生成する
 	void InitializeDepthStencilView();
 
-	// ビューポート
+	// ビューポートを初期化する
 	void InitializeViewport();
 
-	// シザー矩形
+	// シザー矩形を初期化する
 	void InitializeScissorRect();
 
-	// DXCコンパイラ
+	// DXCコンパイラを初期化する
 	void InitializeDXCCompiler();
+
+	// FPS 固定初期化
+	void InitializeFixFPS();
+
+	// FPS 固定更新
+	void UpdateFixFPS();
 
 	// ImGuiを初期化する
 	void InitializeImGui();
@@ -69,12 +80,12 @@ private:
 	// フェンスを生成する（GPU同期用）
 	void InitializeFence();
 
-	// -------------------------------------------------------------------------
-	// 画像資料に基づくヘルパー関数の追加
-	// -------------------------------------------------------------------------
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, uint32_t descriptorSize, uint32_t index) const;
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, uint32_t descriptorSize, uint32_t index) const;
-	ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) const;
+	// 任意のインデックスのハンドルを計算するヘルパ
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(const ComPtr<ID3D12DescriptorHeap>& heap, UINT size, uint32_t index);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(const ComPtr<ID3D12DescriptorHeap>& heap, UINT size, uint32_t index);
+
+	// テクスチャ読み込み
+	DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
 private:
 	// Windowsアプリケーション
@@ -109,5 +120,11 @@ private:
 	HANDLE fenceEvent_ = nullptr;
 
 	ComPtr<IDXGISwapChain4> swapChain_;
-	ComPtr<ID3D12Resource> swapChainResources_[2];
+	std::array<ComPtr<ID3D12Resource>, 2> backBuffers_;
+
+	D3D12_VIEWPORT viewport_{};
+	D3D12_RECT scissorRect_{};
+
+	// 記録時間(FPS固定用)
+	std::chrono::steady_clock::time_point reference_;
 };
