@@ -17,6 +17,8 @@
 #include <strsafe.h>
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "SpriteCommon.h"
+#include "Sprite.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
@@ -645,6 +647,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input* input = new Input();
 	input->Initialize(winApp);
 
+	SpriteCommon* spriteCommon = nullptr;
+	spriteCommon = new SpriteCommon();
+	spriteCommon->Initialize(dxCommon);
+
+	Sprite* sprite = new Sprite();
+	sprite->Initialize();
+
 	while (true) {
 		if (winApp->ProcessMessage()) {
 			break;
@@ -754,6 +763,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	includeHandler->Release();
 
 	delete input;
+	delete sprite;
+	delete spriteCommon;
 
 #ifdef _DEBUG
 	// もし debugController がここで定義されていれば Release しますが
