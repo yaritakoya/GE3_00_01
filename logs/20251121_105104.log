@@ -1,0 +1,19 @@
+Use Adapater:NVIDIA GeForce RTX 4060 Laptop GPU
+
+FeatureLevel : 12.2
+
+Complete create D3D12Device!!!
+
+Begin CompileShader,path:Particle.VS.hlsl,profike:vs_6_0
+
+Particle.VS.hlsl:22:43: error: use of undeclared identifier 'gTrabsfirmationMatrices'; did you mean 'gTransformationMatrices'?
+    output.position = mul(input.position, gTrabsfirmationMatrices[instanceId].WVP);
+                                          ^~~~~~~~~~~~~~~~~~~~~~~
+                                          gTransformationMatrices
+Particle.VS.hlsl:8:40: note: 'gTransformationMatrices' declared here
+StructuredBuffer<TransformationMatrix> gTransformationMatrices : register(t0);
+                                       ^
+Particle.VS.hlsl:24:64: error: use of undeclared identifier 'gTrabsfirmationMatrices'
+    output.normal = normalize(mul(input.normal, (float32_t3x3) gTrabsfirmationMatrices[instanceId].World));
+                                                               ^
+
