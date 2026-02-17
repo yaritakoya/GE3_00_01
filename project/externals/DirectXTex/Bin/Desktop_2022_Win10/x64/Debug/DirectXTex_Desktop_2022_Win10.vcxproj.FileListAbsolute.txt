@@ -1,0 +1,3 @@
+C:\Users\K024G\OneDrive\デスクトップ\授業\CG2\CG2_00_01\project\externals\DirectXTex\Bin\Desktop_2022_Win10\x64\Debug\DirectXTex.lib
+C:\Users\k024g\Downloads\CG2_00_01-GE3_05_02\CG2_00_01-GE3_05_02\project\externals\DirectXTex\Bin\Desktop_2022_Win10\x64\Debug\DirectXTex.lib
+C:\Users\k024g\OneDrive\デスクトップ\授業\GE3a\project\externals\DirectXTex\Bin\Desktop_2022_Win10\x64\Debug\DirectXTex.lib
