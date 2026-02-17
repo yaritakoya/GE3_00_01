@@ -389,6 +389,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	HRESULT hr = S_OK;
 
 #pragma region log
+
 	// ログのディレクトリを用意
 	std::filesystem::create_directory("logs");
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
