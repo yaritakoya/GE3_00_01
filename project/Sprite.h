@@ -3,16 +3,18 @@
 #include "DirectXCommon.h"
 #include <Matrix.h>
 
+class SpriteCommon;
+
 class Sprite {
 public:
-	void Initialize(SpriteCommon * spriteCommon);
+	void Initialize(SpriteCommon* spriteCommon);
 
 	void Update();
 
 	void Draw();
 
 private:
-	SpriteCommon * spriteCommon_; // メンバー変数を追加  
+	SpriteCommon* spriteCommon_; // メンバー変数を追加  
 
 	// 頂点データ
 	struct VertexData {
@@ -21,57 +23,44 @@ private:
 		//Vector3 normal;   // 法線
 	};
 
-    // マテリアルデータ
-    struct Material {
-        Vector4 color;
-        int32_t enableLighting;
-        float padding[3];
-        Matrix4x4 uvTransform;
-    };
+	// マテリアルデータ
+	struct Material {
+		Vector4 color;
+		int32_t enableLighting;
+		float padding[3];
+		Matrix4x4 uvTransform;
+	};
 
-	// 変換行列データ
-    struct TransformationMatrix {
-        Matrix4x4 WVP;
-        Matrix4x4 World;
-    };
+	// 座標変換行列データ
+	struct TransformationMatrix {
+		Matrix4x4 WVP;
+		Matrix4x4 World;
+	};
 
-	
+	// UV 変換行列の初期値（単位行列）
+	Transform uvTransform{
+		{1.0f, 1.0f, 1.0f},
+		{0.0f, 0.0f, 0.0f},
+		{0.0f, 0.0f, 0.0f}
+	};
 
-    Transform uvTransform{
-        {1.0f, 1.0f, 1.0f},
-        {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
-    };
+	// ▼バッファリソース	
+	ComPtr<ID3D12Resource> vertexResource_;	//  VertexBuffer リソース
+	ComPtr<ID3D12Resource> indexResource_;	// IndexBuffer リソース
+	ComPtr<ID3D12Resource> materialResource_;	// マテリアルリソース
+	ComPtr<ID3D12Resource> transformationMatrixResource_;	// 座標変換行列リソース
 
-	// バッファリソース
-       // ▼ 頂点バッファ（VertexBuffer）の GPU リソース
-    Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
+	// ▼ バッファリソース内のデータを指すポインタ
+	VertexData* vertexData_ = nullptr;	// 頂点データへのポインタ
+	uint32_t* indexData_ = nullptr;	// インデックスデータへのポインタ
+	Material* materialData_ = nullptr;	// マテリアルデータへのポインタ
+	TransformationMatrix* transformationMatrixData_ = nullptr;	// 座標変換行列データへのポインタ
 
-    // ▼ インデックスバッファ（IndexBuffer）の GPU リソース
-    Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
+	// バッファリソースの使い方を補足するバッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
-    // ▼ CPU 側のデータ（頂点配列）
-    VertexData* vertexData_ = nullptr;
-
-    // ▼ CPU 側のデータ（インデックス配列）
-    uint32_t* indexData_ = nullptr;
-
-    // ▼ GPU に渡す際に必要なビュー構造体
-    D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
-    D3D12_INDEX_BUFFER_VIEW indexBufferView_;
-
-
-    // マテリアルリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
-    // バッファリソース内のデータを指すポインタ
-	Material* materialData_ = nullptr;
-
-
-    // バッファリソース
-    Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_;
-	// バッファリソース内のデータを指すポインタ
-	TransformationMatrix* transformationMatrixData_ = nullptr;
-
-    DirectXCommon* dxCommon_ = nullptr;
+	//
+	DirectXCommon* dxCommon_ = nullptr;
 
 };

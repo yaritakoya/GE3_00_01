@@ -11,15 +11,15 @@
 #include <string>
 #include <strsafe.h>
 #include <vector>
-#include <format>      // std::format を使うので必須
+#include <format>     
 #include <sstream>
 #include <iostream>
 
 #include "Input.h"
 #include "WinApp.h"
 #include "DirectXCommon.h"
-#include "SpriteCommon.h"   // ★追加
-#include "Sprite.h"         // ★追加（使うなら）
+#include "SpriteCommon.h"   
+#include "Sprite.h"         
 
 // --- Direct3D 12 / DXGI 関連 ---
 #include <d3d12.h>
