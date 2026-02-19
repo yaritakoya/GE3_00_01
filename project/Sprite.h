@@ -13,6 +13,20 @@ public:
 
 	void Draw();
 
+	//getter/setter
+	//▼スプライトの位置を取得・設定する関数
+	const Vector2& GetPosition() const { return position_; }
+	void SetPosition(const Vector2& position) { position_ = position; }
+	//▼スプライトの回転を取得・設定する関数
+	float GetRotation() const { return rotation_; }
+	void SetRotation(float rotation) { rotation_ = rotation; }
+	//▼スプライトの色を取得・設定する関数
+	const Vector4& GetColor() const { return materialData_->color; }
+	void SetColor(const Vector4& color) { materialData_->color = color; }
+	//▼スプライトのサイズを取得・設定する関数
+	const Vector2& GetSize() const { return size_; }
+	void SetSize(const Vector2& size) { size_ = size; }
+	
 private:
 	SpriteCommon* spriteCommon_; // メンバー変数を追加  
 
@@ -62,5 +76,10 @@ private:
 
 	//
 	DirectXCommon* dxCommon_ = nullptr;
+
+	//sprite座標
+	Vector2 position_ = { 0.0f, 0.0f };
+	float rotation_ = 0.0f;
+	Vector2 size_ = { 640.0f, 360.0f };
 
 };
