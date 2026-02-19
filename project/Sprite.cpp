@@ -52,16 +52,16 @@ void Sprite::Initialize(SpriteCommon* spriteCommon) {
 
 void Sprite::Update() {
 	// 頂点リソース
-	vertexData_[0].position = { 0.0f, 360.0f, 0.0f, 1.0f }; // 左下
+	vertexData_[0].position = { 0.0f, size_.y, 0.0f, 1.0f }; // 左下
 	vertexData_[0].texcoord = { 0.0f, 1.0f };
 
 	vertexData_[1].position = { 0.0f, 0.0f, 0.0f, 1.0f }; // 左上
 	vertexData_[1].texcoord = { 0.0f, 0.0f };
 
-	vertexData_[2].position = { 640.0f, 360.0f, 0.0f, 1.0f }; // 右下
+	vertexData_[2].position = { size_.x, size_.y, 0.0f, 1.0f }; // 右下
 	vertexData_[2].texcoord = { 1.0f, 1.0f };
 
-	vertexData_[3].position = { 640.0f, 0.0f, 0.0f, 1.0f }; // 右上
+	vertexData_[3].position = { size_.x, 0.0f, 0.0f, 1.0f }; // 右上
 	vertexData_[3].texcoord = { 1.0f, 0.0f };
 
 	// インデックスリソース
@@ -90,7 +90,9 @@ void Sprite::Update() {
 
 	//transformationMatrixData_->WVP = MatrixMath::Multiply(worldMatrix, MatrixMath::Multiply(viewMatrix, projectionMatrix));
 
-
+	transform_.translate = { position_.x, position_.y, 0.0f };
+	transform_.rotate = { 0.0f, 0.0f, rotation_ };
+	transform_.scale = { size_.x, size_.y, 1.0f };
 }
 
 void Sprite::Draw() {

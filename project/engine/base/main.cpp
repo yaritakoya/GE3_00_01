@@ -153,12 +153,13 @@ float waveTime = 0.0f;
 Input* input = nullptr;
 WinApp* winApp = nullptr;
 DirectXCommon* dxCommon = nullptr;
-SpriteCommon* spriteCommon = nullptr; // ★追加
-Sprite* sprite = nullptr; // ★追加（使うなら）
+SpriteCommon* spriteCommon = nullptr;
+Sprite* sprite = nullptr; 
 
 // ===============================
 //  行列・数学系の関数
 // ===============================
+
 #pragma region 行列関数
 
 //Matrix4x4 MakeIdentity4x4() {
@@ -834,9 +835,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     sprite = new Sprite();
     sprite->Initialize(spriteCommon);
 
-
- 
-
     // 各種ポインタ取得（DirectXCommon 経由）
     ID3D12Device* device = dxCommon->GetDevice();
     ID3D12GraphicsCommandList* commandList = dxCommon->GetCommandList();
@@ -1235,6 +1233,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
         srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
+    std::vector<Sprite*>sprites;
+    for (uint32_t i = 0; i < 5; ++i) {
+        Sprite* sprite = new Sprite();
+        sprite->Initialize(spriteCommon);
+        sprites.push_back(sprite);
+    }
+
     // ===============================
     //  メインループ
     // ===============================
@@ -1328,6 +1333,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         sprite->Update();
 
+		for (Sprite* sprite : sprites) {
+			sprite->Update();
+            
+            //
+			Vector2 position = sprite->GetPosition();
+			position.x += 0.1f;
+			position.y += 0.1f;
+			sprite->SetPosition(position);
+            //
+			float rotation = sprite->GetRotation();
+			rotation += 1.0f;
+			sprite->SetRotation(rotation);
+            //
+			Vector4 color = sprite->GetColor();
+			color.x += 0.01f;
+			if (color.x > 1.0f) {
+				color.x -= 1.0f;
+			}
+			sprite->SetColor(color);
+		}
+
         // ImGui コマンドを確定
         ImGui::Render();
 
@@ -1375,8 +1401,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         //    2, textureSrvHandleGPU);   // uvChecker を使う
 
         //commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
-
-        sprite->Draw();
+        for (Sprite* sprite : sprites) {
+            sprite->Draw();
+        }
 
         spriteCommon->PreDraw();
 
@@ -1436,6 +1463,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     winApp->Finalize();
     delete winApp;
     winApp = nullptr;
+
+	for (Sprite* sprite : sprites) {
+		delete sprite;
+	}
 
     delete spriteCommon;
 	spriteCommon = nullptr;
