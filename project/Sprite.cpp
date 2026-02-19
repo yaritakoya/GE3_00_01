@@ -71,6 +71,10 @@ void Sprite::Update() {
 	//トランスフォームの初期化
 	Transform transform_ = { {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
+	transform_.translate = { position_.x, position_.y, 0.0f };
+	transform_.rotate = { 0.0f, 0.0f, rotation_ };
+	transform_.scale = { size_.x, size_.y, 1.0f };
+
 	// 頂点データを書き込む
 	Matrix4x4 worldMatrix = MatrixMath::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 viewMatrix = MatrixMath::MakeIdentity4x4();
@@ -90,9 +94,6 @@ void Sprite::Update() {
 
 	//transformationMatrixData_->WVP = MatrixMath::Multiply(worldMatrix, MatrixMath::Multiply(viewMatrix, projectionMatrix));
 
-	transform_.translate = { position_.x, position_.y, 0.0f };
-	transform_.rotate = { 0.0f, 0.0f, rotation_ };
-	transform_.scale = { size_.x, size_.y, 1.0f };
 }
 
 void Sprite::Draw() {
