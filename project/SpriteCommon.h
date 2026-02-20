@@ -24,10 +24,6 @@ private:
 
     DirectXCommon* dxCommon_ = nullptr;
 
-    
-
-  
-
     Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
 };

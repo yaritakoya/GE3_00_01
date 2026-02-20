@@ -19,7 +19,8 @@
 #include "WinApp.h"
 #include "DirectXCommon.h"
 #include "SpriteCommon.h"   
-#include "Sprite.h"         
+#include "Sprite.h"
+#include "TextureManager.h"
 
 // --- Direct3D 12 / DXGI 関連 ---
 #include <d3d12.h>
@@ -1241,6 +1242,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sprites.push_back(sprite);
 	}
 
+	//テクスチャマネージャの初期化
+	TextureManager::GetInstance()->Initialize();
+
 	// ===============================
 	//  メインループ
 	// ===============================
@@ -1465,6 +1469,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	winApp->Finalize();
 	delete winApp;
 	winApp = nullptr;
+
+	//テクスチャマネージャの終了処理
+	TextureManager::GetInstance()->Finalize();
 
 	for (Sprite* sprite : sprites) {
 		delete sprite;

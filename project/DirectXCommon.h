@@ -51,6 +51,9 @@ public:
     ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
     ID3D12DescriptorHeap* GetSRVHeap()     const { return srvDescriptorHeap_.Get(); }
 
+    //最大SRV数(最大テクスチャ枚数)
+    static const uint32_t kMaxSRVCount;
+
 private:
     // 内部初期化（スライドの「初期化処理のコメント解除」で使うやつ）
     void InitializeDevice();
@@ -121,11 +124,10 @@ private:
     // 任意のインデックスのハンドルを計算するヘルパ
     static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(
         const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& heap,
-        UINT size,
-        uint32_t index);
+        UINT size,uint32_t index);
 
     static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
         const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& heap,
-        UINT size,
-        uint32_t index);
+        UINT size,uint32_t index);
+
 };

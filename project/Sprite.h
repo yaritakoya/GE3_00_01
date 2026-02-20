@@ -7,7 +7,7 @@ class SpriteCommon;
 
 class Sprite {
 public:
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(SpriteCommon* spriteCommon, uint32_t textureHandle = 0);
 
 	void Update();
 
@@ -81,5 +81,6 @@ private:
 	Vector2 position_ = { 0.0f, 0.0f };
 	float rotation_ = 0.0f;
 	Vector2 size_ = { 640.0f, 360.0f };
-
+	//テクスチャ番号
+	uint32_t textureIndex_ = 0;
 };

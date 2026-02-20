@@ -4,7 +4,7 @@
 
 //using namespace DirectXCommon;
 
-void Sprite::Initialize(SpriteCommon* spriteCommon) {
+void Sprite::Initialize(SpriteCommon* spriteCommon, uint32_t textureHandle) {
 	// スプライトの初期化処理をここに記述
 	this->spriteCommon_ = spriteCommon;
 
@@ -48,6 +48,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon) {
 	// 単位行列を書き込んでおく
 	transformationMatrixData_->WVP = MatrixMath::MakeIdentity4x4();
 	transformationMatrixData_->World = MatrixMath::MakeIdentity4x4();
+
 }
 
 void Sprite::Update() {
