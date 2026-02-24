@@ -5,8 +5,6 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 
-// ImGuiなど...
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     WinApp* winApp = new WinApp();
     winApp->Initialize();
@@ -19,7 +17,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     SpriteCommon* spriteCommon = new SpriteCommon();
     spriteCommon->Initialize(dxCommon);
 
-    // --- テクスチャ読み込み（ここで一括管理！） ---
+    // --- テクスチャ読み込み ---
     // LoadTextureはテクスチャハンドル（番号）を返す
     uint32_t textureHandleMonster = spriteCommon->LoadTexture("Resources/uvChecker.png");
     uint32_t textureHandleTitle = spriteCommon->LoadTexture("Resources/uvChecker.png");

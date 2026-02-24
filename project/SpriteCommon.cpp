@@ -40,7 +40,6 @@ uint32_t SpriteCommon::LoadTexture(const std::string& filePath) {
     assert(dxCommon_);
 
     // 1. ファイルから画像を読み込む
-    // ★ここでのエラーは DirectXCommon.h の書き換えで直ります
     DirectX::ScratchImage mipImages = dxCommon_->LoadTexture(filePath);
     const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 
@@ -148,7 +147,7 @@ void SpriteCommon::CreateRootSignature() {
 void SpriteCommon::CreateGraphicsPipelineState() {
     ID3D12Device* device = dxCommon_->GetDevice();
 
-    // ★ シェーダーのコンパイル (Sprite2D用)
+    // シェーダーのコンパイル (Sprite2D用)
     Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"resources/shader/Sprite2D.VS.hlsl", L"vs_6_0");
     assert(vertexShaderBlob != nullptr);
 

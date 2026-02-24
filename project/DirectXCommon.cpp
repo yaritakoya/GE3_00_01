@@ -85,13 +85,13 @@ void DirectXCommon::PostDraw() {
     HRESULT hr = commandList_->Close();
     assert(SUCCEEDED(hr));
 
-    // ★修正：コマンドリストの実行はコマンドキューに対して行う
+    //コマンドリストの実行はコマンドキューに対して行う
     ID3D12CommandList* commandLists[] = { commandList_.Get() };
     commandQueue_->ExecuteCommandLists(1, commandLists);
 
     swapChain_->Present(1, 0);
 
-    // ★修正：シグナル発行もコマンドキューに対して行う
+    //シグナル発行もコマンドキューに対して行う
     fenceVal_++;
     commandQueue_->Signal(fence_.Get(), fenceVal_);
 
@@ -149,7 +149,7 @@ void DirectXCommon::InitializeDevice() {
 }
 
 void DirectXCommon::InitializeCommand() {
-    // ★修正：コマンドキューの生成を追加
+    // コマンドキューの生成を追加
     D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
     HRESULT hr = device_->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
     assert(SUCCEEDED(hr));
@@ -300,7 +300,7 @@ void DirectXCommon::InitializeFence() {
 //  リソース生成・転送ヘルパー関数
 // ==========================================
 
-// ★★★ 復活：LoadTextureの実装（安全版） ★★★
+// LoadTextureの実装
 DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath) {
     // 文字コード変換（警告が出ないようにヘルパー関数使用）
     std::wstring filePathW = ConvertString(filePath);

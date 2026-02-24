@@ -84,11 +84,6 @@ void Sprite::AdjustTextureRect() {
     float topPos = -anchorPoint_.y * size_.y;
     float bottomPos = (1.0f - anchorPoint_.y) * size_.y;
 
-    // Y軸反転（DirectXのスクリーン座標系に合わせる場合、上向きがY+ならこれでOK。下向きY+なら反転が必要）
-    // 2Dゲームでは「左上が(0,0)、右下が(WinWidth, WinHeight)」となるように
-    // プロジェクション行列を設定していることが多いです。
-    // 今回は「左下がY=0、右上がY=1」のUV座標系と、「左下頂点」の対応関係を作ります。
-
     // 0: 左下
     vertexData_[0].position = { leftPos,  bottomPos, 0.0f, 1.0f };
     vertexData_[0].texcoord = { left,     bottom,    0.0f, 0.0f };
@@ -104,8 +99,6 @@ void Sprite::AdjustTextureRect() {
 }
 
 void Sprite::Update() {
-    // 必要ならここで AdjustTextureRect を呼んでもいいですが、
-    // サイズ変更時のみ呼ぶほうが効率的です。
 
     // ワールド行列の計算
     Matrix4x4 rotateMatrix = MatrixMath::MakeRotateZMatrix(rotation_);
@@ -121,13 +114,9 @@ void Sprite::Update() {
 
     transformationMatrixData_->World = worldMatrix;
     transformationMatrixData_->WVP = worldViewProjectionMatrix;
-
-    // 色の更新
-    // materialData_->color = ...;
 }
 
 void Sprite::Draw() {
-    // 共通設定は SpriteCommon::PreDraw で行われている前提
 
     ID3D12GraphicsCommandList* commandList = spriteCommon_->GetDxCommon()->GetCommandList();
 
