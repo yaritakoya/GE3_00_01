@@ -1,1 +1,2 @@
+C:\Users\k024g\Downloads\CG2_00_01-GE3_5- (3)\CG2_00_01-GE3_5-\project\externals\DirectXTex\Bin\Desktop_2022_Win10\x64\Development\DirectXTex.lib
 C:\Users\k024g\OneDrive\デスクトップ\授業\GE3a\project\externals\DirectXTex\Bin\Desktop_2022_Win10\x64\Development\DirectXTex.lib

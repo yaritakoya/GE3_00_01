@@ -23,36 +23,23 @@ public:
     D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUDescriptorHandle(uint32_t index) const;
     D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUDescriptorHandle(uint32_t index) const;
 
-    // ===== 資料で書かれていた関数たち =====
-    /// <summary>バッファリソースの生成</summary>
-    Microsoft::WRL::ComPtr<ID3D12Resource>
-        CreateBufferResource(size_t sizeInBytes);
+    // SRVヒープの取得
+    ID3D12DescriptorHeap* GetSrvHeap() const { return srvDescriptorHeap_.Get(); }
 
-    /// <summary>テクスチャリソースの生成</summary>
-    Microsoft::WRL::ComPtr<ID3D12Resource>
-        CreateTextureResource(const DirectX::TexMetadata& metadata);
-
-    /// <summary>テクスチャデータの転送</summary>
-    Microsoft::WRL::ComPtr<ID3D12Resource>
-        UploadTextureData(
-            Microsoft::WRL::ComPtr<ID3D12Resource> texture,
-            const DirectX::ScratchImage& mipImages);
-
-    /// <summary>シェーダーのコンパイル</summary>
-    Microsoft::WRL::ComPtr<IDxcBlob>
-        CompileShader(const std::wstring& filePath, const wchar_t* profile);
-
-    /// <summary>テクスチャファイルの読み込み（static）</summary>
-    static DirectX::ScratchImage
-        LoadTexture(const std::string& filePath);
-
-    // getter（資料のスライド）
-    ID3D12Device* GetDevice()      const { return device_.Get(); }
+    ID3D12Device* GetDevice() const { return device_.Get(); }
     ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
-    ID3D12DescriptorHeap* GetSRVHeap()     const { return srvDescriptorHeap_.Get(); }
+
+    // ★★★ 復活：テクスチャ読み込み関数 ★★★
+    DirectX::ScratchImage LoadTexture(const std::string& filePath);
+
+    // ===== ヘルパー関数 =====
+    Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+    Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
+    Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
+    Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const std::wstring& profile);
 
 private:
-    // 内部初期化（スライドの「初期化処理のコメント解除」で使うやつ）
+    void InitializeFixFPS();
     void InitializeDevice();
     void InitializeCommand();
     void InitializeSwapChain(WinApp* winApp);
@@ -66,26 +53,15 @@ private:
     void InitializeImGui();
     void InitializeFence();
 
-	// FPS 固定初期化
-    void InitializeFixFPS();
-
-    // FPS固定更新
-	void UpdateFixFPS();
-
-	//記録時間(FPS固定用)
-    std::chrono::steady_clock::time_point reference_;
-
-private:
     WinApp* winApp_ = nullptr;
 
-    // デバイスまわり
     Microsoft::WRL::ComPtr<ID3D12Device> device_;
     Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_;
-    Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter_;
 
-    // コマンドまわり
-    Microsoft::WRL::ComPtr<ID3D12CommandQueue>        commandQueue_;
-    Microsoft::WRL::ComPtr<ID3D12CommandAllocator>    commandAllocator_;
+    // コマンドキュー（これがないとGPUが動きません）
+    Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_;
+
+    Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator_;
     Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
 
     // スワップチェーン & バックバッファ
@@ -100,9 +76,9 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer_;
     UINT dsvDescriptorSize_ = 0;
 
-    // ★ SRV 用ヒープ（これだけで OK）
+    // SRV 用ヒープ
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_;
-    UINT srvDescriptorSize_ = 0;   // ← ここが cpp と名前を合わせるポイント
+    UINT srvDescriptorSize_ = 0;
 
     // フェンス
     Microsoft::WRL::ComPtr<ID3D12Fence> fence_;
@@ -114,18 +90,7 @@ private:
     D3D12_RECT     scissorRect_{};
 
     // DXC
-    Microsoft::WRL::ComPtr<IDxcUtils>          dxcUtils_;
-    Microsoft::WRL::ComPtr<IDxcCompiler3>      dxcCompiler_;
+    Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_;
+    Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_;
     Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_;
-
-    // 任意のインデックスのハンドルを計算するヘルパ
-    static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(
-        const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& heap,
-        UINT size,
-        uint32_t index);
-
-    static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
-        const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& heap,
-        UINT size,
-        uint32_t index);
 };
