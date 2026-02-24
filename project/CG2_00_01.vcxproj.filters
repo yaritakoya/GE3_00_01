@@ -94,6 +94,8 @@
   <ItemGroup>
     <FxCompile Include="Resources\shader\Object3D.VS.hlsl" />
     <FxCompile Include="Resources\shader\Object3D.PS.hlsl" />
+    <FxCompile Include="Sprite2D.VS.hlsl" />
+    <FxCompile Include="Sprite2D.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -158,5 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shader\Object3d.hlsli" />
+    <None Include="Sprite2D.hlsli" />
   </ItemGroup>
 </Project>

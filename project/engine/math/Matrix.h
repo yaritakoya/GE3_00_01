@@ -63,6 +63,7 @@ namespace MatrixMath {
 
 	Vector3 Normalize(const Vector3& v);
 	
+
 	
 };
 
